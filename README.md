@@ -8,3 +8,5 @@ npm install ethers
 
 Cài thêm Material UI (nếu bạn thích UI đẹp nhanh):
 npm install @mui/material @emotion/react @emotion/styled
+
+node scripts/export-abi.js
