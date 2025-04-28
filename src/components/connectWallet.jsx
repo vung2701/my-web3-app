@@ -1,28 +1,34 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { ethers } from 'ethers';
 
-export default function ConnectWallet() {
-  const [account, setAccount] = useState("");
+export default function ConnectWallet({ setAccount }) {
+  const [error, setError] = useState(null);
 
-  const connectWallet = async () => {
-    if (window.ethereum) {
-      try {
-        const accounts = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
+  const connect = async () => {
+    if (!window.ethereum) {
+      setError('Please install MetaMask');
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const accounts = await provider.send('eth_requestAccounts', []);
+      if (accounts.length > 0) {
         setAccount(accounts[0]);
-      } catch (error) {
-        console.error("User denied account access");
+        setError(null);
+      } else {
+        setError('No accounts found');
       }
-    } else {
-      console.error(
-        "MetaMask is not installed. Please install it to use this feature."
-      );
+    } catch (err) {
+      setError(`Failed to connect wallet: ${err.message}`);
+      console.error('Connect wallet error:', err);
     }
   };
+
   return (
     <div>
-      <button onClick={connectWallet}>Connect Wallet</button>
-      {account && <p>Connected Account: {account}</p>}
+      <button onClick={connect}>Connect Wallet</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 }
