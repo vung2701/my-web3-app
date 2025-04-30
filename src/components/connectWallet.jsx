@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 
-export default function ConnectWallet({ setAccount }) {
+export default function ConnectWallet({ account, setAccount }) {
   const [error, setError] = useState(null);
 
   const connect = async () => {
@@ -9,7 +9,6 @@ export default function ConnectWallet({ setAccount }) {
       setError('Please install MetaMask');
       return;
     }
-
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await provider.send('eth_requestAccounts', []);
@@ -27,7 +26,10 @@ export default function ConnectWallet({ setAccount }) {
 
   return (
     <div>
-      <button onClick={connect}>Connect Wallet</button>
+      {account ?
+        <h2>Connected Account: {account}</h2>
+      :<button onClick={connect}>Connect Wallet</button>
+      }
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
