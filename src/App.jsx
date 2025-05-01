@@ -1,24 +1,53 @@
-import { useState } from 'react';
-import ConnectWallet from './components/connectWallet.jsx';
-import TokenInfo from './components/tokenInfor.jsx';
-import SendETH from './components/sendETH.jsx';
-import SendToken from './components/sendToken.jsx';
+import { useAccount } from 'wagmi'
+import { useState } from 'react'
+import Header from './components/Header'
+import TokenSelector from './components/TokenSelector'
+import TransferForm from './components/TransferForm'
+import TxStatus from './components/TxStatus'
+
+const TOKEN_LIST = [
+  {
+    name: 'MyToken',
+    symbol: 'MTK',
+    address: import.meta.env.VITE_CONTRACT_SEPOLIA_ADDRESS,
+    decimals: 18,
+  },
+  // {
+  //   name: 'NewToken',
+  //   symbol: 'NTK',
+  //   address: import.meta.env.VITE_CONTRACT_SEPOLIA_ADDRESS,
+  //   decimals: 18,
+  // },
+]
 
 function App() {
-  const [account, setAccount] = useState('');
-
+  const { address, isConnected } = useAccount()
+  const [token, setToken] = useState(TOKEN_LIST[0])
+  const [receiver, setReceiver] = useState('')
+  const [amount, setAmount] = useState('')
+  const [txHash, setTxHash] = useState(null)
 
   return (
-    <div>
-      <ConnectWallet account={account} setAccount={setAccount} />
-      {account && <>
-        <TokenInfo account={account} />
-        <SendETH />
-        <SendToken />
-      </>
-      }
+    <div className="p-6 max-w-xl mx-auto">
+      <Header />
+      {isConnected && (
+        <div className="mt-4 space-y-4">
+          <p><b>Ví:</b> {address}</p>
+
+          <TokenSelector token={token} setToken={setToken} tokens={TOKEN_LIST} />
+          <TransferForm
+            token={token}
+            receiver={receiver}
+            setReceiver={setReceiver}
+            amount={amount}
+            setAmount={setAmount}
+            setTxHash={setTxHash}
+          />
+          <TxStatus txHash={txHash} />
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
