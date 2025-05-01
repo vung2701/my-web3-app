@@ -3,21 +3,22 @@ import { useState } from 'react'
 import Header from './components/Header'
 import TokenSelector from './components/TokenSelector'
 import TransferForm from './components/TransferForm'
-import TxStatus from './components/TxStatus'
+import TxStatus from './components/TxStatus1.jsx'
+import { CONTRACT_ADDRESSES } from './constants/contractAddresses.js'
 
 const TOKEN_LIST = [
   {
     name: 'MyToken',
     symbol: 'MTK',
-    address: import.meta.env.VITE_CONTRACT_SEPOLIA_ADDRESS,
+    address: CONTRACT_ADDRESSES.MyToken,
     decimals: 18,
   },
-  // {
-  //   name: 'NewToken',
-  //   symbol: 'NTK',
-  //   address: import.meta.env.VITE_CONTRACT_SEPOLIA_ADDRESS,
-  //   decimals: 18,
-  // },
+  {
+    name: 'NewToken',
+    symbol: 'NTK',
+    address: CONTRACT_ADDRESSES.NewToken,
+    decimals: 18,
+  },
 ]
 
 function App() {

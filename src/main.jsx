@@ -10,36 +10,54 @@ import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Define the chains and providers
-const chains = [sepolia]
+// Định nghĩa mạng localhost (Hardhat)
+const localhost = {
+  id: 31337,
+  name: 'Hardhat',
+  network: 'localhost',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: { http: ['http://127.0.0.1:8545'] },
+    public: { http: ['http://127.0.0.1:8545'] },
+  },
+}
 
-// Get custom RPC URL from environment variable or use a default
+// Danh sách các chuỗi được hỗ trợ
+const chains = [sepolia, localhost]
+
+// Lấy RPC URL và mạng từ biến môi trường
 const sepoliaRpcUrl = import.meta.env.VITE_SEPOLIA_RPC_URL || 'https://rpc.sepolia.org'
+const network = import.meta.env.VITE_NETWORK || 'localhost' // 'sepolia' hoặc 'localhost'
 
-// Configure RainbowKit
+// Cấu hình RainbowKit
 const { connectors } = getDefaultWallets({
   appName: 'My Dapp',
   projectId: import.meta.env.VITE_PROJECT_ID,
   chains,
 })
 
-// Configure wagmi with connectors included
+// Cấu hình Wagmi
 const config = createConfig({
   chains,
   transports: {
-    [sepolia.id]: http(sepoliaRpcUrl)
+    [sepolia.id]: http(sepoliaRpcUrl),
+    [localhost.id]: http('http://127.0.0.1:8545'),
   },
-  connectors
+  connectors,
 })
 
-// Create a query client
+// Tạo QueryClient
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={config}>
-        <RainbowKitProvider chains={chains}>
+        <RainbowKitProvider chains={chains} initialChain={network === 'sepolia' ? sepolia : localhost}>
           <App />
         </RainbowKitProvider>
       </WagmiProvider>

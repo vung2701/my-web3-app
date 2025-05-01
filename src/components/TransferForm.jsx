@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import ERC20_ABI from '../abis/ERC20.json'
 
-function TransferForm({ token, receiver, setReceiver, amount, setAmount, 5 }) {
+function TransferForm({ token, receiver, setReceiver, amount, setAmount, setTxHash }) {
   const sendToken = async () => {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum)
