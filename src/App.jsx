@@ -6,8 +6,7 @@ import TransferForm from './components/TransferForm';
 import TxStatus from './components/TxStatus.jsx';
 import { CONTRACT_ADDRESSES } from './constants/contractAddresses.js';
 import './App.css';
-import MyTokenABI from './abis/MyToken.json';
-import NewTokenABI from './abis/NewToken.json';
+import ERC20_ABI from './abis/ERC20_ABI.json';
 import { ethers, formatUnits } from 'ethers';
 
 const TOKEN_LIST = [
@@ -38,14 +37,6 @@ function App() {
   const initData = async () => {
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
-      const network = await provider.getNetwork();
-      if (network.chainId !== 11155111) {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: '0xaa36a7' }],
-        });
-      }
-
       const signer = await provider.getSigner();
       setSigner(signer);
       console.log('Token Address:', token.address);

@@ -4,14 +4,24 @@ import { ethers } from "ethers";
 function TokenSelector({ tokens, token, setToken, balance, tokenContract, signer }) {
   const getToken = async () => {
     try {
-      const tx = await tokenContract.mint(signer.getAddress(), ethers.parseUnits("100", token.decimals))
-      await tx.wait()
-      alert('✅ Nhận token thành công!')
+      if (!tokenContract || !signer) {
+        throw new Error('Token contract or signer not initialized');
+      }
+      const userAddress = await signer.getAddress();
+      const balance = await tokenContract.balanceOf(userAddress);
+      if (balance >= ethers.parseUnits("200", token.decimals)) {
+        return;
+      }
+      const tx = await tokenContract.mint(
+        userAddress,
+        ethers.parseUnits("100", token.decimals)
+      );
+      await tx.wait();
+      alert('✅ Nhận token thành công!');
     } catch (err) {
-      console.error(err)
-      alert('❌ Lỗi nhận token!')
+      console.error('Error in getToken:', err);
     }
-  }
+  };
   return (
     <div className="toolBar">
       <div className="selectToken ">

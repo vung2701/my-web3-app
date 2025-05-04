@@ -40,3 +40,7 @@
   flex-direction: column;
   gap: 10px;
 }
+
+.txStatus {
+  margin-top: 20px;
+}
