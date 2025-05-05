@@ -14,7 +14,7 @@
 
 .tokenBalance {
   display: flex;
-  margin-bottom: 20px;
+  margin-bottom: 50px;
   align-items: center;
   justify-content: space-between;
 }
@@ -43,4 +43,19 @@
 
 .txStatus {
   margin-top: 20px;
+}
+
+.getToken {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+  min-width: 240px;
+}
+
+.helpText {
+  font-size: 14px;
+  color: #666;
+  position: absolute;
+  bottom: -40px;
 }

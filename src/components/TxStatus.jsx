@@ -4,7 +4,7 @@ function TxStatus({ txHash }) {
   return (
     <div className="txStatus">
       <p>
-        Tx Hash:{' '}
+        Xem thông tin giao dịch tại:{' '}
         <a
           href={`https://sepolia.etherscan.io/tx/${txHash}`}
           target="_blank"

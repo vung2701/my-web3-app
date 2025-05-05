@@ -1,25 +1,33 @@
 import { Select, Button } from "antd";
-import { ethers } from "ethers";
+import { ethers, formatUnits } from "ethers";
 
-function TokenSelector({ tokens, token, setToken, balance, tokenContract, signer }) {
+function TokenSelector({ tokens, token, setToken, balance, tokenContract, signer, initData, setLoading }) {
   const getToken = async () => {
+    setLoading(true);
     try {
       if (!tokenContract || !signer) {
         throw new Error('Token contract or signer not initialized');
       }
       const userAddress = await signer.getAddress();
-      const balance = await tokenContract.balanceOf(userAddress);
-      if (balance >= ethers.parseUnits("200", token.decimals)) {
+      const balanceRaw = await tokenContract.balanceOf(userAddress);
+      console.log('Raw balanceOf response:', balanceRaw);
+
+      const balance = ethers.formatUnits(balanceRaw, token.decimals);
+      if (balanceRaw >= ethers.parseUnits('200', token.decimals)) {
+        console.log('Balance sufficient, skipping mint');
         return;
       }
-      const tx = await tokenContract.mint(
-        userAddress,
-        ethers.parseUnits("100", token.decimals)
-      );
+
+      const tx = await tokenContract.mint(userAddress, ethers.parseUnits('100', token.decimals));
       await tx.wait();
+      await initData(); // Refresh balance after minting
       alert('✅ Nhận token thành công!');
+  
     } catch (err) {
       console.error('Error in getToken:', err);
+    }
+    finally {
+      setLoading(false);
     }
   };
   return (
@@ -47,6 +55,7 @@ function TokenSelector({ tokens, token, setToken, balance, tokenContract, signer
         <div className="getToken">
           <Button size="medium" style={{ backgroundColor: 'green', color: 'white', border: 'none' }}
             onClick={getToken}>Nhận Token</Button>
+          <p className="helpText">Số dư nhỏ hơn 200 có thể nhận để test, <br /> Lưu ý: ví test sepolia cần 1 chút ETH phí</p>
         </div>
       </div>
     </div>

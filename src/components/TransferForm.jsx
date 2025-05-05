@@ -1,17 +1,22 @@
 import { ethers } from 'ethers'
 import { Input, Button } from 'antd';
 
-function TransferForm({ token, receiver, setReceiver, amount, setAmount, setTxHash, tokenContract }) {
+function TransferForm({ token, receiver, setReceiver, amount, setAmount, setTxHash, tokenContract, initData, setLoading }) {
   const sendToken = async () => {
+    setLoading(true);
     try {
       const value = ethers.parseUnits(amount, token.decimals)
       const tx = await tokenContract.transfer(receiver, value)
       setTxHash(tx.hash)
       await tx.wait()
+      await initData();
+      setReceiver('')
+      setAmount('')
       alert('✅ Gửi token thành công!')
     } catch (err) {
       console.error(err)
-      alert('❌ Lỗi gửi token!')
+    }finally {
+      setLoading(false);
     }
   }
 

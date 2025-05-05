@@ -8,6 +8,7 @@ import { CONTRACT_ADDRESSES } from './constants/contractAddresses.js';
 import './App.css';
 import ERC20_ABI from './abis/ERC20_ABI.json';
 import { ethers, formatUnits } from 'ethers';
+import GlobalLoading from './components/loading/Loading.jsx';
 
 const TOKEN_LIST = [
   {
@@ -33,6 +34,7 @@ function App() {
   const [tokenContract, setTokenContract] = useState(null);
   const [balance, setBalance] = useState(0);
   const [signer, setSigner] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const initData = async () => {
     try {
@@ -78,6 +80,8 @@ function App() {
               balance={balance}
               tokenContract={tokenContract}
               signer={signer}
+              initData={initData}
+              setLoading={setLoading}
             />
             <TransferForm
               token={token}
@@ -87,6 +91,8 @@ function App() {
               setAmount={setAmount}
               setTxHash={setTxHash}
               tokenContract={tokenContract}
+              initData={initData}
+              setLoading={setLoading}
             />
             <TxStatus txHash={txHash} />
           </div>
@@ -115,6 +121,7 @@ function App() {
           </ul>
         )}
       </div>
+      {loading && <GlobalLoading loading={loading} />}
     </div>
   );
 }
